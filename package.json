@@ -1,9 +1,10 @@
 {
   "name": "test-real-styles",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "utilities to test real styling of dom elements",
   "main": "dist/index.js",
   "scripts": {
+    "prepublishOnly": "tsc",
     "test": "BROWSERS=chromium,webkit,firefox jest"
   },
   "repository": {
