@@ -1,0 +1,50 @@
+{
+  "name": "test-real-styles",
+  "version": "0.1.0",
+  "description": "utilities to test real styling of dom elements",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "BROWSERS=chromium,webkit,firefox jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Xiphe/test-real-styles.git"
+  },
+  "keywords": [
+    "css",
+    "testing",
+    "ui-test",
+    "browser",
+    "playwright",
+    "test",
+    "jest",
+    "styles"
+  ],
+  "author": "Hannes Diercks <node@xiphe.net> (https://xiphe.net/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Xiphe/test-real-styles/issues"
+  },
+  "homepage": "https://github.com/Xiphe/test-real-styles#readme",
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "jsdom"
+  },
+  "devDependencies": {
+    "@types/color-namer": "1.3.0",
+    "@types/jest": "25.1.3",
+    "@types/lodash.kebabcase": "4.1.6",
+    "jest": "25.1.0",
+    "playwright": "0.11.1",
+    "prettier": "1.19.1",
+    "ts-jest": "25.2.1",
+    "typescript": "3.8.2"
+  },
+  "dependencies": {
+    "color-namer": "1.4.0",
+    "dom-to-playwright": "0.1.0",
+    "lodash.kebabcase": "4.1.1",
+    "rgb-hex": "3.0.0",
+    "with-playwright": "0.1.0"
+  }
+}
