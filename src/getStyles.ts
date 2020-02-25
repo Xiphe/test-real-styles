@@ -3,7 +3,7 @@ import kebabCase from 'lodash.kebabcase';
 import { normalize as defaultNormalize } from './normalize';
 
 export type Options = {
-  normalize?: (prop: keyof CSSStyleDeclaration, value: string) => string;
+  normalize?: (value: string, prop: keyof CSSStyleDeclaration) => string;
   pseudoElt?: string;
 };
 
@@ -35,7 +35,7 @@ export async function getStyles<T extends (keyof CSSStyleDeclaration)[]>(
   );
 
   return Object.keys(computedStyles).reduce((memo, key) => {
-    memo[key] = normalize(key as any, computedStyles[key]);
+    memo[key] = normalize(computedStyles[key], key as any);
     return memo;
   }, {} as any);
 }

@@ -1,7 +1,7 @@
 import rgbHex from 'rgb-hex';
 import namer from 'color-namer';
 
-export function normalize(_: any, value: string): string {
+export function normalize(value: string): string {
   const match = value.match(/rgb\(.*\)/);
   if (match) {
     const hex = `#${rgbHex(match[0])}`;
@@ -11,5 +11,6 @@ export function normalize(_: any, value: string): string {
       namedColor.distance === 0 ? namedColor.name : hex,
     );
   }
+
   return value;
 }
