@@ -6,10 +6,9 @@ export function normalize(value: string): string {
   if (match) {
     const hex = `#${rgbHex(match[0])}`;
     const namedColor = namer(hex).html[0];
-    return value.replace(
-      /rgb\(.*\)/,
-      namedColor.distance === 0 ? namedColor.name : hex,
-    );
+    return value
+      .replace(/rgb\(.*\)/, namedColor.distance === 0 ? namedColor.name : hex)
+      .toLowerCase();
   }
 
   return value;
