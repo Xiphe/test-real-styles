@@ -1,6 +1,6 @@
 {
   "name": "test-real-styles",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "utilities to test real styling of dom elements",
   "main": "dist/index.js",
   "scripts": {
