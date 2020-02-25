@@ -1,6 +1,7 @@
 import withPlayWright, { LaunchedPage } from 'with-playwright';
 import domToPlaywright from 'dom-to-playwright';
 import { getStyles, Options } from './getStyles';
+import { resolveStyleInput, Styles } from './resolveStyleInput';
 
 type Callback = (
   context: {
@@ -17,15 +18,16 @@ type Callback = (
   launchedPage: Promise<LaunchedPage>,
 ) => void;
 
-export default function testRealStyles(styles: string, callback: Callback) {
+export default function testRealStyles(
+  styles: Styles | Promise<Styles>,
+  callback: Callback,
+) {
   withPlayWright((browserName, pw) => {
-    let asyncStuff = pw.then(async ({ page }) => {
-      const res = await domToPlaywright(page);
-      return {
-        ...res,
-        page,
-      };
-    });
+    const asyncStuff = pw.then(async ({ page }) => ({
+      ...(await domToPlaywright(page)),
+      styles: await resolveStyleInput(styles),
+      page,
+    }));
 
     callback(
       {
@@ -43,9 +45,9 @@ export default function testRealStyles(styles: string, callback: Callback) {
           await page.hover(select(element));
         },
         async updatePage(node) {
-          const { update, page } = await asyncStuff;
+          const { update, page, styles } = await asyncStuff;
           await update(node);
-          await page.addStyleTag({ content: styles });
+          await page.addStyleTag(styles);
         },
       },
       pw,
