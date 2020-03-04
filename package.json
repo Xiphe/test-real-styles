@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "prepublishOnly": "tsc",
-    "test": "BROWSERS=chromium,webkit,firefox jest"
+    "test": "BROWSERS=chromium,webkit,firefox jest",
+    "tdd": "BROWSERS=chromium jest --watch"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,8 @@
   "homepage": "https://github.com/Xiphe/test-real-styles#readme",
   "jest": {
     "preset": "ts-jest",
-    "testEnvironment": "jsdom"
+    "testEnvironment": "jsdom",
+    "testTimeout": 20000
   },
   "devDependencies": {
     "@types/color-namer": "1.3.0",
