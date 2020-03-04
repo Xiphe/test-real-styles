@@ -13,10 +13,20 @@ type Callback = (
     ) => Promise<{ [key in T[0]]: string }>;
     hover: (element: HTMLElement) => Promise<void>;
     focus: (element: HTMLElement) => Promise<void>;
-    updatePage: (node: HTMLElement | Document) => Promise<void>;
+    updatePage: (
+      node: HTMLElement | Document,
+      options?: { transitions?: boolean },
+    ) => Promise<void>;
   },
   launchedPage: Promise<LaunchedPage>,
 ) => void;
+
+const DISABLE_TRANSITIONS = `
+* {
+  -moz-transition: none !important;
+  -webkit-transition: none !important;
+  transition: none !important;
+}`;
 
 export default function testRealStyles(
   styles: Styles | Promise<Styles>,
@@ -44,10 +54,14 @@ export default function testRealStyles(
           const { select, page } = await asyncStuff;
           await page.hover(select(element));
         },
-        async updatePage(node) {
+        async updatePage(node, options = {}) {
+          const { transitions = false } = options;
           const { update, page, styles } = await asyncStuff;
           await update(node);
           await page.addStyleTag(styles);
+          if (!transitions) {
+            await page.addStyleTag({ content: DISABLE_TRANSITIONS });
+          }
         },
       },
       pw,
