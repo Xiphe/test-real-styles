@@ -23,12 +23,10 @@ export async function getStyles<T extends (keyof CSSStyleDeclaration)[]>(
       key: kebabCase(prop).toLowerCase(),
     };
   });
-  const computedStyles = await page.$eval(
-    selector,
-    extractStyles,
+  const computedStyles = await page.$eval(selector, extractStyles, {
     styles,
     pseudoElt,
-  );
+  });
 
   return Object.keys(computedStyles).reduce((memo, key) => {
     memo[key] = normalize(computedStyles[key], key as any);
