@@ -10,10 +10,14 @@ npm install test-real-styles
 
 ## Usage
 
+Assuming a [jest](https://jestjs.io/) environment executed with
+`BROWSERS=chromium,webkit,firefox jest`.
+
 ```ts
 import withRealStyles, { toCss } from 'test-real-styles';
 
 withRealStyles(
+  /* The styles used by the components to be tested */
   `
     button { background-color: fuchsia; }
     button::after {
@@ -22,14 +26,25 @@ withRealStyles(
     button:hover { color: #123456; }
     button:focus { color: rgba(255, 0, 123, 0.5); }
   `,
+  /*
+   * This function will be called once for each browser in process.env.BROWSERS
+   * and never if no browsers given (in order to only execute plain unit tests).
+   *
+   * In the background it will spin up a headless browser using playwright
+   */
   ({ browserName, getStyles, updatePage, hover, focus }) => {
     describe(`button in ${browserName}`, () => {
       it('is pink', async () => {
-        /* Not that this can also be a container from https://testing-library.com/ */
+        /* Note that this can also be a container from https://testing-library.com/ */
         const button = document.createElement('button');
+
+        /* Copy the element over into our real browser */
         await updatePage(button);
 
-        expect(await getStyles(button, ['backgroundColor'])).toEqual({
+        /* Get the styles we're interested in */
+        const buttonStyles = await getStyles(button, ['backgroundColor']);
+
+        expect(buttonStyles).toEqual({
           backgroundColor: 'fuchsia',
         });
       });
@@ -39,9 +54,12 @@ withRealStyles(
         await updatePage(button);
 
         await hover(button);
-        const styles = await getStyles(button, ['color', 'backgroundColor']);
+        const buttonStyles = await getStyles(button, [
+          'color',
+          'backgroundColor',
+        ]);
 
-        expect(toCss(styles)).toMatchInlineSnapshot(`
+        expect(toCss(buttonStyles)).toMatchInlineSnapshot(`
           "color: #123456;
           background-color: fuchsia;"
         `);
@@ -50,11 +68,11 @@ withRealStyles(
       it('gets focus styles', async () => {
         const button = document.createElement('button');
         await updatePage(button);
-        await focus(button);
 
-        expect((await getStyles(button, ['color'])).color).toBe(
-          'rgba(255, 0, 123, 0.5)',
-        );
+        await focus(button);
+        const buttonStyles = await getStyles(button, ['color']);
+
+        expect(buttonStyles.color).toBe('rgba(255, 0, 123, 0.5)');
       });
 
       if (browserName !== 'firefox') {
