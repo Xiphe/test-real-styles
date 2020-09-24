@@ -1,25 +1,27 @@
-import withPlayWright, { LaunchedPage } from 'with-playwright';
+import withPlayWright, {
+  LaunchedPage,
+  PlaywrightBrowser,
+} from 'with-playwright';
 import domToPlaywright from 'dom-to-playwright';
 import { getStyles, Options } from './getStyles';
 import { resolveStyleInput, Styles } from './resolveStyleInput';
 
-type Callback = (
-  context: {
-    browserName: string;
-    getStyles: <T extends (keyof CSSStyleDeclaration)[]>(
-      element: HTMLElement,
-      styles: T,
-      options?: Options,
-    ) => Promise<{ [key in T[0]]: string }>;
-    hover: (element: HTMLElement) => Promise<void>;
-    focus: (element: HTMLElement) => Promise<void>;
-    updatePage: (
-      node: HTMLElement | Document,
-      options?: { transitions?: boolean },
-    ) => Promise<void>;
-  },
-  launchedPage: Promise<LaunchedPage>,
-) => void;
+export type Context = {
+  browserName: string;
+  getStyles: <T extends (keyof CSSStyleDeclaration)[]>(
+    element: HTMLElement,
+    styles: T,
+    options?: Options,
+  ) => Promise<{ [key in T[0]]: string }>;
+  hover: (element: HTMLElement) => Promise<void>;
+  focus: (element: HTMLElement) => Promise<void>;
+  updatePage: (
+    node: HTMLElement | Document,
+    options?: { transitions?: boolean },
+  ) => Promise<void>;
+};
+
+type Callback = (context: Context, launchedPage: Promise<LaunchedPage>) => void;
 
 const DISABLE_TRANSITIONS = `
 * {
@@ -28,9 +30,11 @@ const DISABLE_TRANSITIONS = `
   transition: none !important;
 }`;
 
+/** @deprecated in favour of new launch API */
 export default function testRealStyles(
   styles: Styles | Promise<Styles>,
   callback: Callback,
+  browsers?: PlaywrightBrowser[],
 ) {
   withPlayWright((browserName, pw) => {
     const asyncStuff = pw.then(async ({ page }) => ({
@@ -66,5 +70,5 @@ export default function testRealStyles(
       },
       pw,
     );
-  });
+  }, browsers);
 }

@@ -50,6 +50,6 @@
     "lodash.kebabcase": "^4.1.1",
     "rgb-hex": "^3.0.0",
     "playwright": "^1.4.1",
-    "with-playwright": "^0.1.1"
+    "with-playwright": "^0.2.0"
   }
 }
