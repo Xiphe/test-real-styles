@@ -10,7 +10,7 @@ button:hover { color: #123456; }
 button:focus { color: rgba(255, 0, 123, 0.5); }
 `;
 
-describe('Browser api', () => {
+describe('button with launch API', () => {
   const { updatePage, getStyles, hover, focus } = launch('chromium', MY_CSS);
 
   it('is pink', async () => {
