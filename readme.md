@@ -75,6 +75,11 @@ describe(`button`, () => {
 });
 ```
 
+## Examples
+
+- [Using Sass or other pre-processors](https://github.com/Xiphe/test-real-styles/blob/trunk/src/__tests__/sass.spec.tsx)
+- [Using React + TestingLibrary](https://github.com/Xiphe/test-real-styles/blob/trunk/src/__tests__/testingLibraryReact.spec.tsx)
+
 ## License
 
 > The MIT License
