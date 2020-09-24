@@ -78,7 +78,8 @@ describe(`button`, () => {
 ## Examples
 
 - [Using Sass or other pre-processors](https://github.com/Xiphe/test-real-styles/blob/trunk/src/__tests__/sass.spec.tsx)
-- [Using React + TestingLibrary](https://github.com/Xiphe/test-real-styles/blob/trunk/src/__tests__/testingLibraryReact.spec.tsx)
+- [Using CSS-Modules, React & TestingLibrary](https://github.com/Xiphe/test-real-styles/blob/trunk/src/__tests__/testingLibraryReact.spec.tsx)
+- [Using StyledComponents](https://github.com/Xiphe/test-real-styles/blob/trunk/src/__tests__/styledComponents.spec.tsx)
 - [Run test in multiple browsers parallel](https://github.com/Xiphe/test-real-styles/blob/trunk/src/__tests__/parallel.spec.tsx)
 
 ## License
