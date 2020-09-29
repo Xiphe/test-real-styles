@@ -23,6 +23,7 @@ export async function getStyles<T extends (keyof CSSStyleDeclaration)[]>(
       key: kebabCase(prop).toLowerCase(),
     };
   });
+
   const computedStyles = await page.$eval(selector, extractStyles, {
     styles,
     pseudoElt,

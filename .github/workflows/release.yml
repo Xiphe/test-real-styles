@@ -1,0 +1,91 @@
+name: test & release
+
+on: push
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - uses: actions/cache@v1
+        id: dependencies-v1
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-dependencies-v1-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-dependencies-v1-
+      - uses: actions/cache@v1
+        id: pwbins-v1
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-pwbins-v1-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-pwbins-v1-
+      - run: npm ci
+        if: |
+          steps.dependencies-v1.outputs.cache-hit != 'true' ||
+          steps.pwbins-v1.outputs.cache-hit != 'true'
+        env:
+          ADBLOCK: true
+  test:
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - uses: microsoft/playwright-github-action@v1
+      - uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-dependencies-v1-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-dependencies-v1-${{ hashFiles('package-lock.json') }}
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-pwbins-v1-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-pwbins-v1-${{ hashFiles('package-lock.json') }}
+      - run: npm test -- --coverage
+      - uses: codecov/codecov-action@v1
+  build:
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-dependencies-v1-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-dependencies-v1-${{ hashFiles('package-lock.json') }}
+      - run: npm run build
+  release:
+    needs: [install, test, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-dependencies-v1-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-dependencies-v1-${{ hashFiles('package-lock.json') }}
+      - uses: cycjimmy/semantic-release-action@v2
+        with:
+          branches: |
+            ['trunk']
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

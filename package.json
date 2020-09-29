@@ -1,10 +1,11 @@
 {
   "name": "test-real-styles",
-  "version": "0.3.0",
+  "version": "0.0.0-development",
   "description": "utilities to test real styling of dom elements",
   "main": "dist/index.js",
   "scripts": {
-    "prepublishOnly": "tsc",
+    "prepublishOnly": "npm run build",
+    "build": "tsc",
     "test": "BROWSERS=chromium,webkit,firefox jest",
     "tdd": "BROWSERS=chromium jest --watch"
   },
