@@ -1,5 +1,11 @@
 # test-real-styles
 
+[![test & release](https://github.com/Xiphe/test-real-styles/workflows/test%20&%20release/badge.svg?branch=trunk)](https://github.com/Xiphe/test-real-styles/actions?query=branch%3Atrunk+workflow%3A%22test+%26+release%22)
+[![codecov](https://codecov.io/gh/Xiphe/test-real-styles/branch/trunk/graph/badge.svg?token=LNLZ1IZK6W)](https://codecov.io/gh/Xiphe/test-real-styles)
+[![npm](https://img.shields.io/npm/v/test-real-styles)](https://www.npmjs.com/package/test-real-styles)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+[![Love and Peace](http://love-and-peace.github.io/love-and-peace/badges/base/v1.0-small.svg)](https://github.com/love-and-peace/love-and-peace/blob/master/versions/base/v1.0/en.md)
+
 (test-)framework agnostic utilities to test real styling of (virtual) dom elements
 
 ## Motivation
