@@ -1,6 +1,18 @@
 # test-real-styles
 
-utilities to test real styling of (virtual) dom elements
+(test-)framework agnostic utilities to test real styling of (virtual) dom elements
+
+## Motivation
+
+I created this with [jest](https://jestjs.io/) and [testing-library](https://testing-library.com/)
+in mind to [programmatically test appearance effects of component APIs](https://xiphe.net/blog/testing/component-design-testing.html?rel=test-real-styles)
+in [real browsers](https://github.com/microsoft/playwright/).
+
+While [`@testing-library/jest-dom` has a `toHaveStyle` assertion](https://github.com/testing-library/jest-dom#tohavestyle) and there are [ways to test css-in-js](https://github.com/styled-components/jest-styled-components) all solutions I've tried ignore the [css cascade](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Cascade_and_inheritance)
+or use a [buggy/incomplete simulation of it](https://github.com/jsdom/jsdom/labels/css).
+
+But real-world components do use the cascade. This library aims to give
+you confidence that a style is actually active on an element.
 
 ## Installation
 
