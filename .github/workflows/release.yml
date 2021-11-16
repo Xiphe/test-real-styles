@@ -9,14 +9,14 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 16.x
       - uses: actions/cache@v1
-        id: dependencies-v1
+        id: dependencies-v2
         with:
           path: node_modules
-          key: ${{ runner.os }}-dependencies-v1-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-dependencies-v2-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-dependencies-v1-
+            ${{ runner.os }}-dependencies-v2-
       - uses: actions/cache@v1
         id: pwbins-v1
         with:
@@ -26,7 +26,7 @@ jobs:
             ${{ runner.os }}-pwbins-v1-
       - run: npm ci
         if: |
-          steps.dependencies-v1.outputs.cache-hit != 'true' ||
+          steps.dependencies-v2.outputs.cache-hit != 'true' ||
           steps.pwbins-v1.outputs.cache-hit != 'true'
         env:
           ADBLOCK: true
@@ -37,14 +37,14 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 16.x
       - uses: microsoft/playwright-github-action@v1
       - uses: actions/cache@v1
         with:
           path: node_modules
-          key: ${{ runner.os }}-dependencies-v1-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-dependencies-v2-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-dependencies-v1-${{ hashFiles('package-lock.json') }}
+            ${{ runner.os }}-dependencies-v2-${{ hashFiles('package-lock.json') }}
       - uses: actions/cache@v1
         with:
           path: ~/.cache/ms-playwright
@@ -60,13 +60,13 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 16.x
       - uses: actions/cache@v1
         with:
           path: node_modules
-          key: ${{ runner.os }}-dependencies-v1-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-dependencies-v2-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-dependencies-v1-${{ hashFiles('package-lock.json') }}
+            ${{ runner.os }}-dependencies-v2-${{ hashFiles('package-lock.json') }}
       - run: npm run build
   release:
     needs: [install, test, build]
@@ -75,13 +75,13 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 16.x
       - uses: actions/cache@v1
         with:
           path: node_modules
-          key: ${{ runner.os }}-dependencies-v1-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-dependencies-v2-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-dependencies-v1-${{ hashFiles('package-lock.json') }}
+            ${{ runner.os }}-dependencies-v2-${{ hashFiles('package-lock.json') }}
       - uses: cycjimmy/semantic-release-action@v2
         with:
           branches: |
