@@ -32,10 +32,11 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "jsdom",
+    "setupFiles": [
+      "./src/__tests__/setup.js"
+    ],
     "testMatch": [
-      "**/__tests__/**/*.[jt]s?(x)",
-      "**/?(*.)+(spec|test).[jt]s?(x)",
-      "!**/fixtures/**"
+      "**/?(*.)+(spec|test).[jt]s?(x)"
     ],
     "moduleNameMapper": {
       "\\.(scss|css)$": "identity-obj-proxy"
@@ -67,6 +68,6 @@
     "lodash.kebabcase": "^4.1.1",
     "playwright": "^1.16.3",
     "rgb-hex": "^3.0.0",
-    "with-playwright": "^0.3.0"
+    "with-playwright": "^1.0.0"
   }
 }
