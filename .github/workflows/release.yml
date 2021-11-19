@@ -18,18 +18,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-dependencies-v2-
       - uses: actions/cache@v1
-        id: pwbins-v1
+        id: pwbins-v2
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-pwbins-v1-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-pwbins-v2-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-pwbins-v1-
+            ${{ runner.os }}-pwbins-v2-
       - run: npm ci
         if: |
-          steps.dependencies-v2.outputs.cache-hit != 'true' ||
-          steps.pwbins-v1.outputs.cache-hit != 'true'
+          steps.dependencies-v2.outputs.cache-hit != 'true'
         env:
           ADBLOCK: true
+      - run: npx playwright install
+        if: |
+          steps.pwbins-v2.outputs.cache-hit != 'true'
+
   test:
     needs: install
     runs-on: ubuntu-latest
@@ -38,7 +41,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 16.x
-      - uses: microsoft/playwright-github-action@v1
+      - run: npx playwright install-deps
       - uses: actions/cache@v1
         with:
           path: node_modules
@@ -48,9 +51,9 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-pwbins-v1-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-pwbins-v2-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-pwbins-v1-${{ hashFiles('package-lock.json') }}
+            ${{ runner.os }}-pwbins-v2-${{ hashFiles('package-lock.json') }}
       - run: npm test -- --coverage
       - uses: codecov/codecov-action@v1
   build:
