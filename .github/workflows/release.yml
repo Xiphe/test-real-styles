@@ -5,13 +5,7 @@ on: push
 jobs:
   release:
     name: release
-    name: ${{ matrix.os }} (${{ matrix.browser }})
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [chromium, firefox, webkit]
-        os: [ubuntu-20.04]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -21,6 +15,5 @@ jobs:
       - run: npm ci
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
-      - run: npx playwright install --with-deps ${{ matrix.browser }} chromium
-      - run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test -- --project=${{ matrix.browser }}
-      - run: npm test -- --coverage
+      - run: npx playwright install --with-deps
+      - run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test -- --coverage
