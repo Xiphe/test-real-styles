@@ -41,7 +41,7 @@
     "moduleNameMapper": {
       "\\.(scss|css)$": "identity-obj-proxy"
     },
-    "testTimeout": 10000
+    "testTimeout": 30000
   },
   "devDependencies": {
     "@testing-library/react": "12.1.2",
