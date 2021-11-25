@@ -16,7 +16,7 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
       - run: npx playwright install --with-deps
-      - run: npm run test -- --coverage
+      - run: npm run test -- --runInBand --coverage
       - uses: codecov/codecov-action@v1
       - run: npm run build
       - run: |
