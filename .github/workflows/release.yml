@@ -5,7 +5,7 @@ on: push
 jobs:
   release:
     name: release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -16,4 +16,4 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
       - run: npx playwright install --with-deps
-      - run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- npm run test -- --coverage
+      - run: npm run test -- --coverage
