@@ -1,14 +1,16 @@
-import { render as renderSass } from 'node-sass';
+import { compileString } from 'sass';
+import fs from 'fs/promises';
 import { getRealStyles } from '../index';
 
-const css = new Promise<string>((res, rej) => {
-  renderSass({ file: __dirname + '/fixtures/style.scss' }, (err, result) => {
-    if (err) {
-      rej(err);
-      return;
-    }
-    res(result.css.toString());
-  });
+const css = new Promise<string>(async (res, rej) => {
+  try {
+    const { css } = compileString(
+      (await fs.readFile(__dirname + '/fixtures/style.scss')).toString(),
+    );
+    res(css);
+  } catch (err) {
+    rej(err);
+  }
 });
 
 describe('with scss', () => {
