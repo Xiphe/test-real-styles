@@ -1,10 +1,10 @@
-import { getBrowsers } from 'with-playwright';
+import { getBrowsers, BrowserConfig } from 'with-playwright';
 import getRealStyles from '../getRealStyles';
 
-describe('parallel execution of multiple browsers based on env', () => {
+describe('execution of multiple browsers based on env', () => {
   let check: string[] = [];
 
-  test.concurrent.each(getBrowsers(process.env))(
+  test.each(getBrowsers(process.env as BrowserConfig))(
     'Button in %s',
     async (browser) => {
       const styles = await getRealStyles({
