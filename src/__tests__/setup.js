@@ -1,5 +1,3 @@
 if (typeof global.setImmediate === 'undefined') {
-  global.setImmediate = (cb) => {
-    cb();
-  };
+  global.setImmediate = setTimeout;
 }
