@@ -1,7 +1,6 @@
-import { PlaywrightBrowser } from 'with-playwright';
 import { Styles } from './resolveStyleInput';
 import { Options as GetStyleOptions } from './getStyles';
-import launchStyleBrowser from './launch';
+import launchStyleBrowser, { PlaywrightBrowser } from './launch';
 
 type Options<S> = {
   /**
@@ -34,9 +33,13 @@ type Options<S> = {
    */
   focus?: HTMLElement;
   /**
-   * the browser to test the styles in
+   * The browser to test the styles in
    */
   browser?: PlaywrightBrowser;
+  /**
+   * CSS transitions are disabled by default, set true to enable them
+   */
+  transitions?: boolean;
 };
 
 function isDocument(elm: HTMLElement | Document): elm is Document {
@@ -48,7 +51,7 @@ function getElement(elm: HTMLElement | Document) {
 }
 
 export default async function getRealStyles<
-  T extends (keyof CSSStyleDeclaration)[]
+  T extends (keyof CSSStyleDeclaration)[],
 >({
   browser = 'chromium',
   css,
@@ -57,11 +60,12 @@ export default async function getRealStyles<
   hover,
   focus,
   getStyles,
+  transitions,
   options,
 }: Options<T>): Promise<{ [key in T[0]]: string }> {
   const sb = launchStyleBrowser(browser, css);
 
-  await sb.updatePage(doc);
+  await sb.updatePage(doc, { transitions });
 
   if (focus) {
     await sb.focus(focus);
@@ -70,5 +74,10 @@ export default async function getRealStyles<
     await sb.hover(hover);
   }
 
-  return sb.getStyles(element, getStyles, options);
+  const styles = await sb.getStyles(element, getStyles, options);
+
+  (await sb.page).close();
+  (await sb.context).close();
+
+  return styles;
 }

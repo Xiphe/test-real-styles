@@ -12,7 +12,7 @@ export async function getStyles<T extends (keyof CSSStyleDeclaration)[]>(
   page: Page,
   selector: string,
   props: T,
-  { normalize = defaultNormalize, pseudoElt }: Options,
+  { normalize = defaultNormalize, pseudoElt }: Options = {},
 ): Promise<{ [key in T[0]]: string }> {
   const styles = props.map((prop: any) => {
     if (typeof prop !== 'string') {

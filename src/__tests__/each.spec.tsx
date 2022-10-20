@@ -1,10 +1,7 @@
-import { getBrowsers, BrowserConfig } from 'with-playwright';
 import getRealStyles from '../getRealStyles';
 
 describe('execution of multiple browsers based on env', () => {
-  let check: string[] = [];
-
-  test.each(getBrowsers(process.env as BrowserConfig))(
+  test.each(['chromium' as const, 'webkit' as const, 'firefox' as const])(
     'Button in %s',
     async (browser) => {
       const styles = await getRealStyles({
@@ -15,16 +12,6 @@ describe('execution of multiple browsers based on env', () => {
       });
 
       expect(styles).toEqual({ backgroundColor: 'fuchsia' });
-      check.push(browser);
     },
   );
-
-  /* This is just a sanity check, no need to do that for your tests */
-  /* prefer directly passing ['chromium', 'webkit', 'firefox'] to test.concurrent.each */
-  it('executed three tests', () => {
-    expect(check).toHaveLength(3);
-    expect(check).toContain('chromium');
-    expect(check).toContain('firefox');
-    expect(check).toContain('webkit');
-  });
 });
