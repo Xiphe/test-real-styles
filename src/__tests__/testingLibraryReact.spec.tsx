@@ -4,9 +4,11 @@ import Button from './fixtures/Button';
 import launch from '../launch';
 
 describe('with react and testing-library', () => {
-  const { updatePage, getStyles } = launch('chromium', {
+  const { updatePage, getStyles, close } = launch('chromium', {
     path: __dirname + '/fixtures/Button.module.css',
   });
+
+  afterAll(close);
 
   it('tests styles', async () => {
     const { container, getByRole } = render(

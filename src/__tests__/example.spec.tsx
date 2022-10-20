@@ -30,7 +30,11 @@ describe(`button`, () => {
   describe('launch API', () => {
     /* In case you want to re-use the browser, interact with the page or do stuff
        before styles are returned */
-    const { updatePage, getStyles, hover, focus } = launch('webkit', MY_CSS);
+    const { updatePage, getStyles, hover, focus, close } = launch(
+      'webkit',
+      MY_CSS,
+    );
+    afterAll(close);
 
     it('gets hover and focus styles', async () => {
       const button = document.createElement('button');

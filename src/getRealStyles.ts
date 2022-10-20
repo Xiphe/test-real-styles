@@ -76,8 +76,7 @@ export default async function getRealStyles<
 
   const styles = await sb.getStyles(element, getStyles, options);
 
-  (await sb.page).close();
-  (await sb.context).close();
+  await sb.close();
 
   return styles;
 }

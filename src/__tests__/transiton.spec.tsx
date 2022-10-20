@@ -4,7 +4,7 @@ describe('transition styles', () => {
   test.each(['chromium' as const, 'webkit' as const, 'firefox' as const])(
     'gets correct styles after transition %s',
     async (browser) => {
-      const { updatePage, getStyles } = launch(
+      const { updatePage, getStyles, close } = launch(
         browser,
         `
         .base {
@@ -23,6 +23,8 @@ describe('transition styles', () => {
       expect(await getStyles(div, ['borderBottomColor'])).toEqual({
         borderBottomColor: 'fuchsia',
       });
+
+      await close();
     },
   );
 });
