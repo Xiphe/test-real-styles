@@ -1,5 +1,4 @@
-import launch from '../launch';
-import { toCss } from '../toCss';
+import { launch, toCss } from '../index';
 
 const MY_CSS = `
 button { background-color: fuchsia; }

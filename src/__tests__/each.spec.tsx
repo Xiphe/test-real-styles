@@ -1,4 +1,4 @@
-import getRealStyles from '../getRealStyles';
+import { getRealStyles } from '../index';
 
 describe('execution of multiple browsers based on env', () => {
   test.each(['chromium' as const, 'webkit' as const, 'firefox' as const])(

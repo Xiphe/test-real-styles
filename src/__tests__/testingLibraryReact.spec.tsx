@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import Button from './fixtures/Button';
-import launch from '../launch';
+import { launch } from '../index';
 
 describe('with react and testing-library', () => {
   const { updatePage, getStyles, close } = launch('chromium', {

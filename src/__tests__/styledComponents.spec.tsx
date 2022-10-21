@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { ServerStyleSheet } from 'styled-components';
 import Headline from './fixtures/Headline';
-import getRealStyles from '../getRealStyles';
+import { getRealStyles } from '../index';
 
 function getCss(sheet: ServerStyleSheet) {
   return sheet

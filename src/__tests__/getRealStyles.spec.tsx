@@ -1,5 +1,4 @@
-import getRealStyles from '../getRealStyles';
-import { toCss } from '../toCss';
+import { getRealStyles, toCss } from '../index';
 
 const MY_CSS = `
   button {
