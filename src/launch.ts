@@ -1,4 +1,4 @@
-import playwright from 'playwright';
+import playwright, { Browser } from 'playwright';
 import { resolveStyleInput, Styles } from './resolveStyleInput';
 import domToPlaywright from 'dom-to-playwright';
 import { getStyles, Options } from './getStyles';
@@ -12,6 +12,8 @@ export const PLAYWRIGHT_BROWSERS = [
 
 export type PlaywrightBrowser = typeof PLAYWRIGHT_BROWSERS[0];
 
+const cache: { [key: string]: Promise<Browser> } = {};
+
 const DISABLE_TRANSITIONS = `
 * {
   -moz-transition: none !important;
@@ -23,10 +25,13 @@ export default function launchStyleBrowser(
   browserName: PlaywrightBrowser,
   stylesInput: Styles | Promise<Styles>,
 ) {
-  const browserP = withTimeout(
-    playwright[browserName].launch(),
-    `Failed to launch ${browserName} in under %n.\nTry reducing parallel test runs`,
-  );
+  if (!cache[browserName]) {
+    cache[browserName] = withTimeout(
+      playwright[browserName].launch(),
+      `Failed to launch ${browserName} in under %n.\nTry reducing parallel test runs`,
+    );
+  }
+  const browserP = cache[browserName];
   const contextP = withTimeout(
     browserP.then((b) => b.newContext()),
     `Failed to create context in ${browserName} in under %n.\nTry reducing parallel test runs`,
@@ -47,11 +52,6 @@ export default function launchStyleBrowser(
     browser: browserP,
     context: contextP,
     page: pageP,
-    async close() {
-      await (await pageP).close();
-      await (await contextP).close();
-      await (await browserP).close();
-    },
     async updatePage(
       element: HTMLElement | Document,
       { transitions = false }: { transitions?: boolean } = {},
@@ -109,4 +109,23 @@ export default function launchStyleBrowser(
       );
     },
   };
+}
+
+export async function cleanup() {
+  const toBeCleared = { ...cache };
+  for (const key in cache) {
+    delete cache[key];
+  }
+
+  for (const key in toBeCleared) {
+    const browser = await toBeCleared[key];
+    for (const context of browser.contexts()) {
+      await context.close();
+    }
+    await browser.close();
+  }
+}
+
+if (typeof afterAll === 'function') {
+  afterAll(cleanup);
 }

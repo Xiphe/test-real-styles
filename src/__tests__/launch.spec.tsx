@@ -10,11 +10,7 @@ button:focus { color: rgba(255, 0, 123, 0.5); }
 `;
 
 describe('button with launch API', () => {
-  const { updatePage, getStyles, hover, focus, close } = launch(
-    'chromium',
-    MY_CSS,
-  );
-  afterAll(close);
+  const { updatePage, getStyles, hover, focus } = launch('chromium', MY_CSS);
 
   it('is pink', async () => {
     const button = document.createElement('button');

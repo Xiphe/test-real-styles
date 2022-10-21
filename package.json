@@ -31,6 +31,7 @@
   "homepage": "https://github.com/Xiphe/test-real-styles#readme",
   "jest": {
     "preset": "ts-jest",
+    "maxWorkers": "33%",
     "testEnvironment": "jsdom",
     "testMatch": [
       "**/?(*.)+(spec|test).[jt]s?(x)"
