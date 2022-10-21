@@ -1,4 +1,4 @@
-import { getRealStyles, launch, toCss } from '../index';
+import { getRealStyles, launch, toCss, LaunchedPage } from '../index';
 
 const MY_CSS = `
   button { background-color: fuchsia; }
@@ -30,9 +30,14 @@ describe(`button`, () => {
   describe('launch API', () => {
     /* In case you want to re-use the browser, interact with the page or do stuff
        before styles are returned */
-    const { updatePage, getStyles, hover, focus } = launch('webkit', MY_CSS);
+
+    let launchedPage: LaunchedPage | null = null;
+    beforeAll(() => {
+      launchedPage = launch('webkit', MY_CSS);
+    });
 
     it('gets hover and focus styles', async () => {
+      const { updatePage, hover, focus, getStyles } = launchedPage!;
       const button = document.createElement('button');
       await updatePage(button);
 
@@ -49,6 +54,7 @@ describe(`button`, () => {
     });
 
     it('gets pseudo elements', async () => {
+      const { updatePage, getStyles } = launchedPage!;
       const button = document.createElement('button');
       await updatePage(button);
 

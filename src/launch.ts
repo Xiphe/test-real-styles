@@ -1,4 +1,4 @@
-import playwright, { Browser } from 'playwright';
+import playwright, { Browser, BrowserContext, Page } from 'playwright';
 import { resolveStyleInput, Styles } from './resolveStyleInput';
 import domToPlaywright from 'dom-to-playwright';
 import { getStyles, Options } from './getStyles';
@@ -16,6 +16,25 @@ export const PLAYWRIGHT_BROWSERS = [
 ];
 
 export type PlaywrightBrowser = typeof PLAYWRIGHT_BROWSERS[0];
+export interface LaunchedPage {
+  name: PlaywrightBrowser;
+  getPlaywright(): Promise<{
+    browser: Browser;
+    context: BrowserContext;
+    page: Page;
+  }>;
+  updatePage(
+    element: HTMLElement | Document,
+    options?: { transitions?: boolean },
+  ): Promise<void>;
+  getStyles<T extends (keyof CSSStyleDeclaration)[]>(
+    element: HTMLElement,
+    styles: T,
+    options?: Options,
+  ): Promise<{ [key in T[0]]: string }>;
+  hover(element: HTMLElement): Promise<void>;
+  focus(element: HTMLElement): Promise<void>;
+}
 
 const cache: { [key: string]: Promise<Browser> } = {};
 
@@ -26,10 +45,10 @@ const DISABLE_TRANSITIONS = `
   transition: none !important;
 }`;
 
-export default function launchStyleBrowser(
+export default function launchPage(
   browserName: PlaywrightBrowser,
   stylesInput: Styles | Promise<Styles>,
-) {
+): LaunchedPage {
   if (!cache[browserName]) {
     cache[browserName] = withTimeout(
       playwright[browserName].launch(),
@@ -54,13 +73,14 @@ export default function launchStyleBrowser(
 
   return {
     name: browserName,
-    browser: browserP,
-    context: contextP,
-    page: pageP,
-    async updatePage(
-      element: HTMLElement | Document,
-      { transitions = false }: { transitions?: boolean } = {},
-    ) {
+    async getPlaywright() {
+      return {
+        browser: await browserP,
+        context: await contextP,
+        page: await pageP,
+      };
+    },
+    async updatePage(element, { transitions = false } = {}) {
       const { update } = await dtpP;
       const page = await pageP;
       const styles = await stylesP;
@@ -82,11 +102,7 @@ export default function launchStyleBrowser(
         );
       }
     },
-    async getStyles<T extends (keyof CSSStyleDeclaration)[]>(
-      element: HTMLElement,
-      styles: T,
-      options?: Options,
-    ) {
+    async getStyles(element, styles, options) {
       const { select } = await dtpP;
       const page = await pageP;
 
@@ -95,7 +111,7 @@ export default function launchStyleBrowser(
         `Failed to get styles within ${browserName} in under %n`,
       );
     },
-    async hover(element: HTMLElement) {
+    async hover(element) {
       const { select } = await dtpP;
       const page = await pageP;
 
@@ -104,7 +120,7 @@ export default function launchStyleBrowser(
         `Failed to hover element within ${browserName} in under %n`,
       );
     },
-    async focus(element: HTMLElement) {
+    async focus(element) {
       const { select } = await dtpP;
       const page = await pageP;
 

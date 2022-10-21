@@ -1,6 +1,6 @@
 import { Styles } from './resolveStyleInput';
 import { Options as GetStyleOptions } from './getStyles';
-import launchStyleBrowser, { PlaywrightBrowser } from './launch';
+import launchPage, { PlaywrightBrowser } from './launch';
 
 type Options<S> = {
   /**
@@ -63,7 +63,7 @@ export default async function getRealStyles<
   transitions,
   options,
 }: Options<T>): Promise<{ [key in T[0]]: string }> {
-  const sb = launchStyleBrowser(browser, css);
+  const sb = launchPage(browser, css);
 
   await sb.updatePage(doc, { transitions });
 
@@ -76,8 +76,9 @@ export default async function getRealStyles<
 
   const styles = await sb.getStyles(element, getStyles, options);
 
-  (await sb.page).close();
-  (await sb.context).close();
+  const { page, context } = await sb.getPlaywright();
+  await page.close();
+  await context.close();
 
   return styles;
 }

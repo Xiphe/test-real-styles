@@ -1,4 +1,4 @@
-import { launch, toCss } from '../index';
+import { launch, toCss, LaunchedPage } from '../index';
 
 const MY_CSS = `
 button { background-color: fuchsia; }
@@ -10,9 +10,13 @@ button:focus { color: rgba(255, 0, 123, 0.5); }
 `;
 
 describe('button with launch API', () => {
-  const { updatePage, getStyles, hover, focus } = launch('chromium', MY_CSS);
+  let launchedPage: LaunchedPage | null = null;
+  beforeAll(() => {
+    launchedPage = launch('chromium', MY_CSS);
+  });
 
   it('is pink', async () => {
+    const { updatePage, getStyles } = launchedPage!;
     const button = document.createElement('button');
     await updatePage(button);
 
@@ -22,6 +26,7 @@ describe('button with launch API', () => {
   });
 
   it('gets hover styles', async () => {
+    const { updatePage, getStyles, hover } = launchedPage!;
     const button = document.createElement('button');
     await updatePage(button);
 
@@ -35,6 +40,7 @@ describe('button with launch API', () => {
   });
 
   it('gets focus styles', async () => {
+    const { updatePage, getStyles, focus } = launchedPage!;
     const button = document.createElement('button');
     await updatePage(button);
     await focus(button);
@@ -46,6 +52,7 @@ describe('button with launch API', () => {
 
   /* computedStyles of pseudo elements do not work in FF, currently */
   it('gets pseudo elements', async () => {
+    const { updatePage, getStyles } = launchedPage!;
     const button = document.createElement('button');
     await updatePage(button);
 
