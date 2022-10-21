@@ -1,8 +1,8 @@
-import { launch } from '../index';
+import { launch, PLAYWRIGHT_BROWSERS } from '../index';
 
 describe('transition styles', () => {
-  test.each(['chromium' as const, 'webkit' as const, 'firefox' as const])(
-    'gets correct styles after transition %s',
+  test.each(PLAYWRIGHT_BROWSERS)(
+    'gets correct styles after transition in %s',
     async (browser) => {
       const { updatePage, getStyles } = launch(
         browser,
