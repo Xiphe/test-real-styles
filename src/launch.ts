@@ -15,7 +15,7 @@ export const PLAYWRIGHT_BROWSERS = [
   'webkit' as const,
 ];
 
-export type PlaywrightBrowser = typeof PLAYWRIGHT_BROWSERS[0];
+export type PlaywrightBrowser = (typeof PLAYWRIGHT_BROWSERS)[0];
 export interface LaunchedPage {
   name: PlaywrightBrowser;
   getPlaywright(): Promise<{
@@ -25,7 +25,7 @@ export interface LaunchedPage {
   }>;
   updatePage(
     element: HTMLElement | Document,
-    options?: { transitions?: boolean },
+    options?: { transitions?: boolean; styles?: Styles | Promise<Styles> },
   ): Promise<void>;
   getStyles<T extends (keyof CSSStyleDeclaration)[]>(
     element: HTMLElement,
@@ -66,9 +66,9 @@ export default function launchPage(
     `Failed to create page in ${browserName} in under %n`,
   );
   const dtpP = pageP.then(domToPlaywright);
-  const stylesP = withTimeout(
+  const globalStylesP = withTimeout(
     resolveStyleInput(stylesInput),
-    `Failed to resolve style input for ${browserName} in under %n`,
+    `Failed to global resolve style input for ${browserName} in under %n`,
   );
 
   return {
@@ -80,10 +80,13 @@ export default function launchPage(
         page: await pageP,
       };
     },
-    async updatePage(element, { transitions = false } = {}) {
+    async updatePage(
+      element,
+      { transitions = false, styles: pageStylesP } = {},
+    ) {
       const { update } = await dtpP;
       const page = await pageP;
-      const styles = await stylesP;
+      const styles = await globalStylesP;
 
       await withTimeout(
         update(element),
@@ -92,8 +95,20 @@ export default function launchPage(
 
       await withTimeout(
         page.addStyleTag(styles),
-        `Failed to add styles to page within ${browserName} in under %n`,
+        `Failed to add global styles to page within ${browserName} in under %n`,
       );
+
+      if (pageStylesP) {
+        await withTimeout(
+          page.addStyleTag(
+            await withTimeout(
+              resolveStyleInput(pageStylesP),
+              `Failed to resolve page style input for ${browserName} in under %n`,
+            ),
+          ),
+          `Failed to add page styles to page within ${browserName} in under %n`,
+        );
+      }
 
       if (!transitions) {
         await withTimeout(

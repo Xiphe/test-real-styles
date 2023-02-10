@@ -15,6 +15,18 @@ describe('button with launch API', () => {
     launchedPage = launch('chromium', MY_CSS);
   });
 
+  it('accepts custom styles when updating page', async () => {
+    const { updatePage, getStyles } = launchedPage!;
+    const button = document.createElement('button');
+    await updatePage(button, {
+      styles: `button { background-color: black !important; }`,
+    });
+
+    expect(await getStyles(button, ['backgroundColor'])).toEqual({
+      backgroundColor: 'black',
+    });
+  });
+
   it('is pink', async () => {
     const { updatePage, getStyles } = launchedPage!;
     const button = document.createElement('button');
