@@ -1,3 +1,4 @@
+import type { Page } from 'playwright';
 import { Styles } from './resolveStyleInput';
 import { Options as GetStyleOptions } from './getStyles';
 import launchPage, { PlaywrightBrowser } from './launch';
@@ -40,6 +41,10 @@ type Options<S> = {
    * CSS transitions are disabled by default, set true to enable them
    */
   transitions?: boolean;
+  /**
+   * Optionally prepare the playwright page
+   */
+  preparePage?: (page: Page) => void | Promise<void>;
 };
 
 function isDocument(elm: HTMLElement | Document): elm is Document {
@@ -62,8 +67,13 @@ export default async function getRealStyles<
   getStyles,
   transitions,
   options,
+  preparePage,
 }: Options<T>): Promise<{ [key in T[0]]: string }> {
   const sb = launchPage(browser, css);
+
+  const { page, context } = await sb.getPlaywright();
+
+  await preparePage?.(page);
 
   await sb.updatePage(doc, { transitions });
 
@@ -76,7 +86,6 @@ export default async function getRealStyles<
 
   const styles = await sb.getStyles(element, getStyles, options);
 
-  const { page, context } = await sb.getPlaywright();
   await page.close();
   await context.close();
 
