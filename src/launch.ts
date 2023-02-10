@@ -3,6 +3,7 @@ import { resolveStyleInput, Styles } from './resolveStyleInput';
 import domToPlaywright from 'dom-to-playwright';
 import { getStyles, Options } from './getStyles';
 import { withTimeout } from './withTimeout';
+import { createQueue } from 'ichschwoer';
 
 if (!(global as any).setImmediate) {
   /** @see https://github.com/microsoft/playwright/issues/18243 */
@@ -70,6 +71,7 @@ export default function launchPage(
     resolveStyleInput(stylesInput),
     `Failed to global resolve style input for ${browserName} in under %n`,
   );
+  const q = createQueue(1);
 
   return {
     name: browserName,
@@ -80,69 +82,75 @@ export default function launchPage(
         page: await pageP,
       };
     },
-    async updatePage(
-      element,
-      { transitions = false, styles: pageStylesP } = {},
-    ) {
-      const { update } = await dtpP;
-      const page = await pageP;
-      const styles = await globalStylesP;
+    updatePage(element, { transitions = false, styles: pageStylesP } = {}) {
+      return q.push(async () => {
+        const { update } = await dtpP;
+        const page = await pageP;
+        const styles = await globalStylesP;
 
-      await withTimeout(
-        update(element),
-        `Failed to update page within ${browserName} in under %n`,
-      );
-
-      await withTimeout(
-        page.addStyleTag(styles),
-        `Failed to add global styles to page within ${browserName} in under %n`,
-      );
-
-      if (pageStylesP) {
         await withTimeout(
-          page.addStyleTag(
-            await withTimeout(
-              resolveStyleInput(pageStylesP),
-              `Failed to resolve page style input for ${browserName} in under %n`,
-            ),
-          ),
-          `Failed to add page styles to page within ${browserName} in under %n`,
+          update(element),
+          `Failed to update page within ${browserName} in under %n`,
         );
-      }
 
-      if (!transitions) {
         await withTimeout(
-          page.addStyleTag({ content: DISABLE_TRANSITIONS }),
-          `Failed to disable transitions within ${browserName} in under %n`,
+          page.addStyleTag(styles),
+          `Failed to add global styles to page within ${browserName} in under %n`,
         );
-      }
-    },
-    async getStyles(element, styles, options) {
-      const { select } = await dtpP;
-      const page = await pageP;
 
-      return withTimeout(
-        getStyles(page, select(element), styles, options),
-        `Failed to get styles within ${browserName} in under %n`,
-      );
-    },
-    async hover(element) {
-      const { select } = await dtpP;
-      const page = await pageP;
+        if (pageStylesP) {
+          const pageStyles = await withTimeout(
+            resolveStyleInput(pageStylesP),
+            `Failed to resolve page style input for ${browserName} in under %n`,
+          );
 
-      await withTimeout(
-        page.hover(select(element)),
-        `Failed to hover element within ${browserName} in under %n`,
-      );
-    },
-    async focus(element) {
-      const { select } = await dtpP;
-      const page = await pageP;
+          await withTimeout(
+            page.addStyleTag(pageStyles),
+            `Failed to add page styles to page within ${browserName} in under %n`,
+          );
+        }
 
-      await withTimeout(
-        page.focus(select(element)),
-        `Failed to focus element within ${browserName} in under %n`,
-      );
+        if (!transitions) {
+          await withTimeout(
+            page.addStyleTag({ content: DISABLE_TRANSITIONS }),
+            `Failed to disable transitions within ${browserName} in under %n`,
+          );
+        }
+      });
+    },
+
+    getStyles(element, styles, options) {
+      return q.push(async () => {
+        const { select } = await dtpP;
+        const page = await pageP;
+
+        return withTimeout(
+          getStyles(page, select(element), styles, options),
+          `Failed to get styles within ${browserName} in under %n`,
+        );
+      });
+    },
+    hover(element) {
+      return q.push(async () => {
+        const { select } = await dtpP;
+        const page = await pageP;
+
+        await withTimeout(
+          page.hover(select(element)),
+          `Failed to hover element within ${browserName} in under %n`,
+        );
+      });
+    },
+    focus(element) {
+      return q.push(async () => {
+        const { select } = await dtpP;
+        const page = await pageP;
+
+        await withTimeout(
+          page.focus(select(element)),
+          `Failed to focus element within ${browserName} in under %n`,
+        );
+      });
     },
   };
 }
