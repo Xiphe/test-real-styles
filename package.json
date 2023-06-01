@@ -67,6 +67,6 @@
     "ichschwoer": "^0.1.0",
     "lodash.kebabcase": "^4.1.1",
     "playwright": "^1.33.0",
-    "rgb-hex": "^3.0.0"
+    "rgb-hex": "^4.0.1"
   }
 }
