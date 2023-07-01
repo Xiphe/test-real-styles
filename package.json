@@ -58,7 +58,7 @@
     "sass": "1.62.1",
     "styled-components": "5.3.11",
     "ts-jest": "29.1.0",
-    "typescript": "5.1.3"
+    "typescript": "5.1.6"
   },
   "dependencies": {
     "@types/rgb-hex": "3.0.0",
