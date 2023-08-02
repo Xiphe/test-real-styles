@@ -2,12 +2,22 @@
   "name": "test-real-styles",
   "version": "0.0.0-development",
   "description": "utilities to test real styling of dom elements",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "types": "./dist/src/index.d.ts"
+    }
+  },
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "tsc",
-    "test": "BROWSERS=chromium,webkit,firefox jest",
-    "tdd": "BROWSERS=chromium jest --watch"
+    "build": "rm -rf dist && tsc --emitDeclarationOnly && node ./build.js",
+    "test": "BROWSERS=chromium,webkit,firefox vitest",
+    "tdd": "BROWSERS=chromium vitest --watch"
   },
   "repository": {
     "type": "git",
@@ -43,22 +53,24 @@
   "devDependencies": {
     "@testing-library/react": "14.0.0",
     "@types/color-namer": "1.3.0",
-    "@types/jest": "29.5.2",
+    "@types/jest": "29.5.3",
     "@types/lodash.kebabcase": "4.1.7",
-    "@types/node": "20.3.3",
-    "@types/react": "18.2.14",
-    "@types/react-dom": "18.2.6",
+    "@types/node": "20.4.5",
+    "@types/react": "18.2.18",
+    "@types/react-dom": "18.2.7",
     "@types/styled-components": "5.1.26",
+    "@vitest/coverage-v8": "0.34.1",
+    "esbuild": "0.18.17",
+    "esbuild-node-externals": "1.8.0",
+    "happy-dom": "10.5.2",
     "identity-obj-proxy": "3.0.0",
-    "jest": "29.5.0",
-    "jest-environment-jsdom": "29.5.0",
-    "prettier": "2.8.8",
+    "prettier": "3.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "sass": "1.63.6",
-    "styled-components": "6.0.2",
-    "ts-jest": "29.1.1",
-    "typescript": "5.1.6"
+    "sass": "1.64.2",
+    "styled-components": "6.0.6",
+    "typescript": "5.1.6",
+    "vitest": "0.34.1"
   },
   "dependencies": {
     "@types/rgb-hex": "3.0.0",
@@ -66,7 +78,7 @@
     "dom-to-playwright": "^0.1.3",
     "ichschwoer": "^0.1.0",
     "lodash.kebabcase": "^4.1.1",
-    "playwright": "^1.35.1",
-    "rgb-hex": "^3.0.0"
+    "playwright": "^1.36.2",
+    "rgb-hex": "^4.0.1"
   }
 }

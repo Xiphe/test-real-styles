@@ -1,13 +1,15 @@
-import { compileString } from 'sass';
-import fs from 'fs/promises';
 import { getRealStyles } from '../index';
+import { exec } from 'child_process';
+import { promisify } from 'util';
 
 const css = new Promise<string>(async (res, rej) => {
   try {
-    const { css } = compileString(
-      (await fs.readFile(__dirname + '/fixtures/style.scss')).toString(),
+    /** Technically, this should also be possible with the JS API of sass
+     * but for some reason I wasn't able to get it to work with vitest */
+    const css = await promisify(exec)(
+      'npx sass ' + __dirname + '/fixtures/style.scss',
     );
-    res(css);
+    res(css.stdout);
   } catch (err) {
     rej(err);
   }

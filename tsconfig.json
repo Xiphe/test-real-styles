@@ -2,8 +2,8 @@
   "compilerOptions": {
     "strict": true,
     "outDir": "dist",
-    "module": "commonjs",
-    "target": "es5",
+    "module": "NodeNext",
+    "target": "ES2016",
     "lib": ["es5", "es6", "es7", "DOM"],
     "sourceMap": true,
     "allowJs": false,
@@ -28,6 +28,7 @@
     "scripts",
     "**/*.spec.ts",
     "**/*.spec.tsx",
-    "**/__mocks__"
+    "**/__mocks__",
+    "**/__tests__"
   ]
 }
