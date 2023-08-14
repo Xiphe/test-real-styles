@@ -1,9 +1,16 @@
 import playwright, { Browser, BrowserContext, Page } from 'playwright';
 import { resolveStyleInput, Styles } from './resolveStyleInput';
-import domToPlaywright from 'dom-to-playwright';
+import domToPlaywrightModule from 'dom-to-playwright';
 import { getStyles, Options } from './getStyles';
 import { withTimeout } from './withTimeout';
 import { createQueue } from 'ichschwoer';
+
+const domToPlaywright: typeof domToPlaywrightModule =
+  /* @ts-ignore */
+  domToPlaywrightModule.__esModule
+    ? /* @ts-ignore */
+      domToPlaywrightModule.default
+    : domToPlaywrightModule;
 
 if (!(global as any).setImmediate) {
   /** @see https://github.com/microsoft/playwright/issues/18243 */
