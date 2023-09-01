@@ -70,7 +70,7 @@
     "sass": "1.64.2",
     "styled-components": "6.0.6",
     "typescript": "5.1.6",
-    "vitest": "0.34.1"
+    "vitest": "0.34.3"
   },
   "dependencies": {
     "@types/rgb-hex": "3.0.0",
